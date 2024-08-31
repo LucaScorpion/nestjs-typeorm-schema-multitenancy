@@ -10,6 +10,6 @@ function listCatsForTenant(tenantId) {
   }).then((r) => r.json());
 }
 
-const allCats = await Promise.all(tenantIds.map((id) => listCatsForTenant(id)));
-
-allCats.forEach((c, i) => console.log(`${i + 1}: ${c.length} cats`));
+(await Promise.all(tenantIds.map((id) => listCatsForTenant(id)))).forEach(
+  (c, i) => console.log(`${i + 1}: ${c.length} cats`),
+);

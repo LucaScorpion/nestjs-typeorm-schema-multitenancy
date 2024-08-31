@@ -11,7 +11,11 @@ export class TenantMiddleware implements NestMiddleware {
     @InjectRepository(Tenant) private readonly tenants: Repository<Tenant>,
   ) {}
 
-  public async use(req: TenantRequest, _: Response, next: NextFunction) {
+  public async use(
+    req: TenantRequest,
+    _: Response,
+    next: NextFunction,
+  ): Promise<void> {
     const tenantId = req.headers['x-tenant-id'];
 
     if (tenantId) {

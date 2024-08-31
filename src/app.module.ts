@@ -5,6 +5,7 @@ import { TenancyModule } from './tenancy/tenancy.module';
 import { TenantsModule } from './public/tenants/tenants.module';
 import { CatsModule } from './tenanted/cats/cats.modules';
 import { TenantMiddleware } from './tenant.middleware';
+import { LimitMiddleware } from './limit.middleware';
 
 @Module({
   imports: [
@@ -18,6 +19,10 @@ import { TenantMiddleware } from './tenant.middleware';
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TenantMiddleware).forRoutes('api');
+    consumer
+      .apply(TenantMiddleware)
+      .forRoutes('api')
+      .apply(LimitMiddleware)
+      .forRoutes('api');
   }
 }

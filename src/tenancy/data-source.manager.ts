@@ -13,16 +13,12 @@ const lruCacheOptions: LRUCache.Options<string, DataSource, unknown> = {
 class DataSourceManager {
   private readonly cache = new LRUCache(lruCacheOptions);
 
-  public get(name: string): DataSource | undefined {
+  private get(name: string): DataSource | undefined {
     return this.cache.get(name);
   }
 
-  public set(name: string, data: DataSource): void {
+  private set(name: string, data: DataSource): void {
     this.cache.set(name, data);
-  }
-
-  public destroy(name: string): void {
-    this.cache.delete(name);
   }
 
   public getOrCreate(name: string, createFn: () => DataSource): DataSource {

@@ -1,8 +1,9 @@
 import { LRUCache } from 'lru-cache';
 import { DataSource } from 'typeorm';
+import { MAX_TENANT_DATA_SOURCES } from '../orm.config';
 
 const lruCacheOptions: LRUCache.Options<string, DataSource, unknown> = {
-  max: 50,
+  max: MAX_TENANT_DATA_SOURCES,
 
   dispose: async (source: DataSource) => {
     await source.destroy();

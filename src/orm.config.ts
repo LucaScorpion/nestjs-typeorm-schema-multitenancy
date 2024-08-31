@@ -5,6 +5,8 @@ export const PUBLIC_SCHEMA = 'public';
 
 export const TENANT_SCHEMA_PREFIX = 'tenant_';
 
+export const MAX_TENANT_DATA_SOURCES = 2;
+
 export function publicOrmConfigFactory(): PostgresConnectionOptions {
   return {
     type: 'postgres',

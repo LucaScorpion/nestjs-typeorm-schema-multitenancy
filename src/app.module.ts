@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { publicOrmConfigFactory } from './orm.config';
 import { TenancyModule } from './tenancy/tenancy.module';
 import { TenantsModule } from './public/tenants/tenants.module';
 import { CatsModule } from './tenanted/cats/cats.modules';
+import { TenantMiddleware } from './tenant.middleware';
 
 @Module({
   imports: [
@@ -15,4 +16,8 @@ import { CatsModule } from './tenanted/cats/cats.modules';
     CatsModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  public configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TenantMiddleware).forRoutes('api');
+  }
+}

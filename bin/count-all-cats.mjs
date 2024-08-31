@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const tenantIds = [1, 2, 3];
+const tenantIds = [1, 2, 3, 4, 5, 6];
 
 function listCatsForTenant(tenantId) {
   return fetch('http://localhost:3000/api/cats', {

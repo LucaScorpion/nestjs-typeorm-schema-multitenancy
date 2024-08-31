@@ -21,13 +21,16 @@ class DataSourceManager {
     this.cache.set(name, data);
   }
 
-  public getOrCreate(name: string, createFn: () => DataSource): DataSource {
+  public async getOrCreate(
+    name: string,
+    createFn: () => Promise<DataSource>,
+  ): Promise<DataSource> {
     const existing = this.get(name);
     if (existing) {
       return existing;
     }
 
-    const created = createFn();
+    const created = await createFn();
     this.set(name, created);
     return created;
   }

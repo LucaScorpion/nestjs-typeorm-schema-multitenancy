@@ -10,17 +10,12 @@ export async function getTenantDataSource(
 ): Promise<DataSource> {
   const schema = tenantSchemaName(tenantId);
 
-  const source = dataSourceManager.getOrCreate(schema, () => {
+  return dataSourceManager.getOrCreate(schema, async () => {
     logger.debug(`Creating data source for tenant ${tenantId}`);
-    return new DataSource(tenantedOrmConfigFactory(schema));
-  });
-
-  if (!source.isInitialized) {
-    logger.debug(`Initializing data source for tenant ${tenantId}`);
+    const source = new DataSource(tenantedOrmConfigFactory(schema));
     await source.initialize();
-  }
-
-  return source;
+    return source;
+  });
 }
 
 export function tenantSchemaName(tenantId: number): string {
@@ -28,6 +23,5 @@ export function tenantSchemaName(tenantId: number): string {
 }
 
 export async function syncDataSource(source: DataSource): Promise<void> {
-  // TODO: Use migrations instead of synchronize.
   await source.synchronize();
 }

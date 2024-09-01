@@ -1,15 +1,24 @@
 import * as path from 'node:path';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { Logger } from '@nestjs/common';
 
 export const PUBLIC_SCHEMA = 'public';
-
 export const TENANT_SCHEMA_PREFIX = 'tenant_';
 
-const MAX_CONNECTIONS = 2;
+const MAX_CONNECTIONS = 3;
+const MAX_PUBLIC_CONNECTIONS = Math.max(1, Math.floor(MAX_CONNECTIONS * 0.1));
+const MAX_TENANTED_CONNECTIONS = MAX_CONNECTIONS - MAX_PUBLIC_CONNECTIONS;
+const MAX_CONNECTIONS_PER_TENANT = 1;
+export const MAX_TENANT_DATA_SOURCES = Math.floor(
+  MAX_TENANTED_CONNECTIONS / MAX_CONNECTIONS_PER_TENANT,
+);
 
-export const MAX_TENANT_DATA_SOURCES = Math.floor(MAX_CONNECTIONS * 0.9);
-
-const MAX_PUBLIC_CONNECTIONS = MAX_CONNECTIONS - MAX_TENANT_DATA_SOURCES;
+const logger = new Logger('ormConfig');
+logger.debug(`Max connections: ${MAX_CONNECTIONS}`);
+logger.debug(`Max public connections: ${MAX_PUBLIC_CONNECTIONS}`);
+logger.debug(`Max tenanted connections: ${MAX_TENANTED_CONNECTIONS}`);
+logger.debug(`Max connections per tenant: ${MAX_CONNECTIONS_PER_TENANT}`);
+logger.debug(`Max tenanted data sources: ${MAX_TENANT_DATA_SOURCES}`);
 
 export function publicOrmConfigFactory(): PostgresConnectionOptions {
   return {
@@ -37,7 +46,7 @@ export function tenantedOrmConfigFactory(
     entities: [path.join(__dirname, '**/*.entity.{ts,js}')],
     migrations: [path.join(__dirname, 'migrations/tenanted/*.{ts,js}')],
     extra: {
-      max: 1,
+      max: MAX_CONNECTIONS_PER_TENANT,
     },
   };
 }

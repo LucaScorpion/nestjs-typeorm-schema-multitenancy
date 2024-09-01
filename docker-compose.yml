@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16
-    command: postgres -c superuser_reserved_connections=1 -c max_connections=3
+    command: postgres -c superuser_reserved_connections=1 -c max_connections=5
     ports:
       - '5432:5432'
     environment:

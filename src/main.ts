@@ -21,15 +21,17 @@ const logger = new Logger('main');
 
 async function syncTenantSchemas(manager: EntityManager) {
   logger.debug(`Synchronizing tenant schemas`);
-  const schemas = await manager.query(`
+  const schemas = await manager.query<{ schema_name: string }[]>(`
       select schema_name
       from information_schema.schemata
       where schema_name like '${TENANT_SCHEMA_PREFIX}%'
   `);
 
   for (const row of schemas) {
-    const schema: string = row.schema_name;
-    const tenantId = parseInt(schema.replace(TENANT_SCHEMA_PREFIX, ''), 10);
+    const tenantId = parseInt(
+      row.schema_name.replace(TENANT_SCHEMA_PREFIX, ''),
+      10,
+    );
 
     logger.debug(`Synchronizing tenant ${tenantId}`);
     const dataSource = await getTenantDataSource(tenantId);

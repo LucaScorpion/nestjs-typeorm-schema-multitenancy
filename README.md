@@ -3,6 +3,8 @@
 A schema-based multitenancy setup for [NestJS](https://nestjs.com)
 with [TypeORM](https://typeorm.io).
 
+Read the accompanying blog post: https://www.scalzotto.nl/posts/nestjs-typeorm-schema-multitenancy
+
 ## Quick start
 
 ```shell

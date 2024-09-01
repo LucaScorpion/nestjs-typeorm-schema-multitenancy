@@ -2,36 +2,26 @@ import { LRUCache } from 'lru-cache';
 import { DataSource } from 'typeorm';
 import { MAX_TENANT_DATA_SOURCES } from '../orm.config';
 
-const lruCacheOptions: LRUCache.Options<string, DataSource, unknown> = {
-  max: MAX_TENANT_DATA_SOURCES,
-
-  dispose: async (source: DataSource) => {
-    await source.destroy();
-  },
-};
-
 class DataSourceManager {
-  private readonly cache = new LRUCache(lruCacheOptions);
+  private readonly cache = new LRUCache<string, DataSource, unknown>({
+    max: MAX_TENANT_DATA_SOURCES,
 
-  private get(name: string): DataSource | undefined {
-    return this.cache.get(name);
-  }
-
-  private set(name: string, data: DataSource): void {
-    this.cache.set(name, data);
-  }
+    dispose: async (source: DataSource) => {
+      await source.destroy();
+    },
+  });
 
   public async getOrCreate(
     name: string,
     createFn: () => Promise<DataSource>,
   ): Promise<DataSource> {
-    const existing = this.get(name);
+    const existing = this.cache.get(name);
     if (existing) {
       return existing;
     }
 
     const created = await createFn();
-    this.set(name, created);
+    this.cache.set(name, created);
     return created;
   }
 }

@@ -21,9 +21,5 @@ export class LimitMiddleware implements NestMiddleware {
           next();
         }),
     );
-    // .catch((error) => {
-    //   console.error('Request processing error:', error);
-    //   res.status(500).send('Server is busy. Please try again later.');
-    // });
   }
 }
